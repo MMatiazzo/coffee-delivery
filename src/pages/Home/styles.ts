@@ -99,6 +99,7 @@ export const CoffeesContainer = styled.div`
 			img {
 				width: 120px;
 				height: 120px;
+				margin-top: -2rem;
 			}
 
 			p {

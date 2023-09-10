@@ -24,6 +24,12 @@ export const GlobalStyle = createGlobalStyle`
   line-height: 130%;
  }
 
+ h3 {
+  font-size: 24px;
+  font-family: 'Baloo 2', sans-serif;
+  line-height: 130%;
+ }
+
  body, input, textarea, button {
   font-family: 'Roboto', sans-serif;
   font-weight: 400;

@@ -1,15 +1,13 @@
 import { ShoppingCart, MapPin } from 'phosphor-react';
-import { HeaderContainer } from './styles';
+import { CartSettingsContainer, HeaderContainer } from './styles';
 
 import logoCoffeeDelivery from '../../assets/logo-coffee-delivery.svg';
 
 export function Header() {
 	return (
 		<HeaderContainer>
-			<div>
-				<img src={logoCoffeeDelivery} alt="teste-logo" />
-			</div>
-			<div className="location-cart">
+			<img src={logoCoffeeDelivery} alt="teste-logo" />
+			<CartSettingsContainer>
 				<span>
 					<MapPin className="location" weight="fill" size={25} />
 					Prado Ferreira, Pr
@@ -17,7 +15,7 @@ export function Header() {
 				<button className="shopping-cart">
 					<ShoppingCart weight="fill" size={25} />
 				</button>
-			</div>
+			</CartSettingsContainer>
 		</HeaderContainer>
 	);
 }

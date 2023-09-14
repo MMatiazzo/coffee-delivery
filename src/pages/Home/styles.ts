@@ -1,6 +1,10 @@
 import { styled } from 'styled-components';
 
-export const HomeContainer = styled.div``;
+export const HomeContainer = styled.div`
+	width: 100%;
+	max-width: 1300px;
+	margin: 4rem auto 0;
+`;
 
 export const BannerContainer = styled.div`
 	display: flex;
@@ -10,8 +14,6 @@ export const BannerContainer = styled.div`
 	gap: 4rem;
 
 	div.coffee-delivery-info {
-		max-width: 39rem;
-
 		p {
 			margin-top: 0.5rem;
 			font-size: 22px;
@@ -64,11 +66,11 @@ export const BannerContainer = styled.div`
 	}
 `;
 
-export const CoffeesContainer = styled.div`
-	padding: 5rem 15rem 5rem 15rem;
+export const ProductShowcase = styled.div`
 	display: flex;
 	flex-direction: column;
 	justify-content: center;
+	margin-top: 3rem;
 	gap: 3rem;
 
 	div.products {
@@ -77,97 +79,87 @@ export const CoffeesContainer = styled.div`
 		grid-template-columns: repeat(auto-fill, minmax(17rem, 1fr));
 
 		gap: 3rem;
+	}
+`;
 
-		div.coffeeContainer {
+export const CoffeeContainer = styled.div`
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	flex-direction: column;
+
+	border-radius: 8px 15% 8px 15%;
+
+	background: ${(props) => props.theme['base-card']};
+
+	width: 18rem;
+	height: 20rem;
+	padding: 0 1rem 1rem;
+
+	text-align: center;
+
+	line-height: 130%;
+
+	img {
+		width: 120px;
+		height: 120px;
+		margin-top: -2rem;
+	}
+
+	p {
+		color: ${(props) => props.theme['base-label']};
+	}
+
+	div {
+		width: 65%;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+	}
+
+	div.coffeeActions {
+		width: 100%;
+		margin-bottom: 0.5rem;
+
+		button[type='submit'] {
+			border: none;
+			background: ${(props) => props.theme['purple-dark']};
+			color: ${(props) => props.theme['base-card']};
+			border-radius: 6px;
+			padding: 3.5px;
+			cursor: pointer;
+		}
+
+		div.price {
 			display: flex;
 			align-items: center;
-			justify-content: space-between;
-			flex-direction: column;
+			justify-content: center;
+			gap: 5px;
+			color: ${(props) => props.theme['base-text']};
 
-			border-radius: 8px 15% 8px 15%;
-
-			background: ${(props) => props.theme['base-card']};
-
-			width: 18rem;
-			height: 20rem;
-			padding: 0 1rem;
-
-			text-align: center;
-
-			line-height: 130%;
-
-			img {
-				width: 120px;
-				height: 120px;
-				margin-top: -2rem;
-			}
-
-			p {
-				color: ${(props) => props.theme['base-label']};
-			}
-
-			div {
-				width: 60%;
-				display: flex;
-				align-items: center;
-				justify-content: space-between;
-			}
-
-			div.tag {
-				width: 100%;
-				justify-content: center;
-				gap: 0.4rem;
-
-				span {
-					font-size: 12.5px;
-					padding: 0.2rem;
-
-					border-radius: 8px;
-
-					background: ${(props) => props.theme['yellow-ligth']};
-					color: ${(props) => props.theme['yellow-dark']};
-					font-weight: bold;
-				}
-			}
-
-			div.coffeeActions {
-				width: 80%;
-				margin-bottom: 0.5rem;
-
-				button {
-					border: none;
-					background: ${(props) => props.theme['purple-dark']};
-					color: ${(props) => props.theme['base-card']};
-					border-radius: 8px;
-					padding: 5px;
-					cursor: pointer;
-				}
-
-				div.price {
-					display: flex;
-					align-items: center;
-					justify-content: center;
-					gap: 5px;
-					color: ${(props) => props.theme['base-text']};
-
-					span {
-						font-size: 14px;
-					}
-				}
-
-				div.quantity {
-					justify-content: center;
-					background: ${(props) => props.theme['base-button']};
-					padding: 0.3rem 0;
-					border-radius: 8px;
-					gap: 0.2rem;
-
-					button {
-						background: transparent;
-						color: ${(props) => props.theme['purple-base']};
-					}
-				}
+			span {
+				font-size: 14px;
 			}
 		}
+
+		div:nth-child(2) {
+			gap: 1rem;
+		}
+	}
+`;
+
+export const TagsContainer = styled.div`
+	justify-content: center;
+	gap: 0.4rem;
+
+	span {
+		font-size: 12.5px;
+		padding: 0.2rem;
+
+		border-radius: 8px;
+
+		background: ${(props) => props.theme['yellow-ligth']};
+		color: ${(props) => props.theme['yellow-dark']};
+		font-weight: bold;
 	}
 `;

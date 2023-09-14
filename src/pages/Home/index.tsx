@@ -1,15 +1,21 @@
-import { BannerContainer, CoffeesContainer, HomeContainer } from './styles';
+import {
+	BannerContainer,
+	CoffeeContainer,
+	HomeContainer,
+	ProductShowcase,
+	TagsContainer,
+} from './styles';
 import {
 	Package,
 	ShoppingCart,
 	Coffee,
 	Timer,
-	Plus,
-	Minus,
+	ShoppingCartSimple,
 } from 'phosphor-react';
 import coffeeBanner from '../../assets/coffee-banner.svg';
 
 import { coffees } from './coffees-constants-mock';
+import { QuantityButton } from '../../components/QuantityButton';
 
 export function Home() {
 	return (
@@ -48,18 +54,18 @@ export function Home() {
 				</div>
 				<img src={coffeeBanner} alt="coffee-banner" />
 			</BannerContainer>
-			<CoffeesContainer>
+			<ProductShowcase>
 				<h3>Nossos cafés</h3>
 				<div className="products">
 					{coffees.map((coffee) => {
 						return (
-							<div className="coffeeContainer" key={coffee.id}>
+							<CoffeeContainer>
 								<img src={coffee.img} alt={coffee.name} />
-								<div className="tag">
+								<TagsContainer>
 									{coffee.tag.map((tag) => {
 										return <span>{tag.toUpperCase()}</span>;
 									})}
-								</div>
+								</TagsContainer>
 								<h3>{coffee.name}</h3>
 								<p>{coffee.description}</p>
 								<div className="coffeeActions">
@@ -68,25 +74,17 @@ export function Home() {
 										<h3>{coffee.price}</h3>
 									</div>
 									<div>
-										<div className="quantity">
-											<button>
-												<Plus />
-											</button>
-											1
-											<button>
-												<Minus />
-											</button>
-										</div>
-										<button>
-											<ShoppingCart weight="fill" size={25} />
+										<QuantityButton />
+										<button type="submit">
+											<ShoppingCartSimple weight="fill" size={25} />
 										</button>
 									</div>
 								</div>
-							</div>
+							</CoffeeContainer>
 						);
 					})}
 				</div>
-			</CoffeesContainer>
+			</ProductShowcase>
 		</HomeContainer>
 	);
 }

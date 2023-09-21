@@ -153,6 +153,7 @@ export const DeleteButton = styled.button`
 	display: flex;
 	align-items: center;
 	gap: 0.2rem;
+	cursor: pointer;
 
 	svg {
 		color: ${(props) => props.theme['purple-base']};

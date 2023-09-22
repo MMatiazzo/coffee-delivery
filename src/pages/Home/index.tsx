@@ -14,10 +14,13 @@ import {
 } from 'phosphor-react';
 import coffeeBanner from '../../assets/coffee-banner.svg';
 
-import { coffees } from './coffees-constants-mock';
 import { QuantityButton } from '../../components/QuantityButton';
+import { useContext } from 'react';
+import { OrderContext } from '../../context/OrderContext';
 
 export function Home() {
+	const { coffeesProducts } = useContext(OrderContext);
+
 	return (
 		<HomeContainer>
 			<BannerContainer>
@@ -57,13 +60,13 @@ export function Home() {
 			<ProductShowcase>
 				<h3>Nossos cafés</h3>
 				<div className="products">
-					{coffees.map((coffee) => {
+					{coffeesProducts.map((coffee) => {
 						return (
-							<CoffeeContainer>
+							<CoffeeContainer key={coffee.id}>
 								<img src={coffee.img} alt={coffee.name} />
 								<TagsContainer>
 									{coffee.tag.map((tag) => {
-										return <span>{tag.toUpperCase()}</span>;
+										return <span key={tag}>{tag.toUpperCase()}</span>;
 									})}
 								</TagsContainer>
 								<h3>{coffee.name}</h3>
@@ -74,7 +77,7 @@ export function Home() {
 										<h3>{coffee.price}</h3>
 									</div>
 									<div>
-										<QuantityButton />
+										<QuantityButton id={coffee.id} amount={coffee.amount} />
 										<button type="submit">
 											<ShoppingCartSimple weight="fill" size={25} />
 										</button>

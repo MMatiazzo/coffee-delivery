@@ -11,16 +11,8 @@ interface IOrderContextProviderProps {
 	children: ReactNode;
 }
 
-interface IOrderCoffee {
-	id: number;
-	name: string;
-	amount: number;
-	price: number;
-	img: string;
-}
-
 interface IOrdersContextType {
-	order: IOrderCoffee[];
+	order: ICoffeeProducts[];
 	coffeesProducts: ICoffeeProducts[];
 	addCoffeeOrder: (id: number) => void;
 	increaseAmount: (id: number) => void;
@@ -32,29 +24,32 @@ export const OrderContext = createContext({} as IOrdersContextType);
 export function OrdersContextProvider({
 	children,
 }: IOrderContextProviderProps) {
-	const [order, dispatch] = useReducer((state: IOrderCoffee[], action: any) => {
-		if (action.type === 'ADD_COFFEE_ORDER') {
-			const coffeeAlreadyExists = state.find(
-				(c) => c.id === action.payload.coffeeId
-			);
-
-			if (!coffeeAlreadyExists) {
-				const { id, img, price, name, amount } =
-					coffeesProducts.find(({ id }) => id === action.payload.coffeeId) ||
-					{};
-
-				if (!id || !img || !price || !name || !amount) {
-					throw new Error('Something went wrong adding coffees');
-				}
-
-				return [...state, { id, img, price, name, amount }];
-			}
-		}
-
-		return state;
-	}, []);
-
 	const [coffeesProducts, setCoffeesProducts] = useState<ICoffeeProducts[]>([]);
+
+	const [order, dispatch] = useReducer(
+		(state: ICoffeeProducts[], action: any) => {
+			if (action.type === 'ADD_COFFEE_TO_CART') {
+				const coffeeAlreadyExists = state.find(
+					(c) => c.id === action.payload.coffeeId
+				);
+
+				if (!coffeeAlreadyExists) {
+					const coffeeChosen = coffeesProducts.find(
+						({ id }) => id === action.payload.coffeeId
+					);
+
+					if (!coffeeChosen) {
+						throw new Error('Something went wrong adding coffees');
+					}
+
+					return [...state, coffeeChosen];
+				}
+			}
+
+			return state;
+		},
+		[]
+	);
 
 	useEffect(() => {
 		if (!coffeesProducts.length) setCoffeesProducts(coffees);
@@ -62,7 +57,7 @@ export function OrdersContextProvider({
 
 	function addCoffeeOrder(coffeeId: number) {
 		dispatch({
-			type: 'ADD_COFFEE_ORDER',
+			type: 'ADD_COFFEE_TO_CART',
 			payload: {
 				coffeeId,
 			},

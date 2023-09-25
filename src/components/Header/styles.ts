@@ -32,7 +32,7 @@ export const CartSettingsContainer = styled.div`
 		}
 	}
 
-	button.shopping-cart {
+	a.shopping-cart {
 		border: none;
 		border-radius: 8px;
 

@@ -13,13 +13,12 @@ import {
 	ShoppingCartSimple,
 } from 'phosphor-react';
 import coffeeBanner from '../../assets/coffee-banner.svg';
-
 import { QuantityButton } from '../../components/QuantityButton';
 import { useContext } from 'react';
 import { OrderContext } from '../../context/OrderContext';
 
 export function Home() {
-	const { coffeesProducts } = useContext(OrderContext);
+	const { coffeesProducts, addCoffeeOrder } = useContext(OrderContext);
 
 	return (
 		<HomeContainer>
@@ -78,7 +77,10 @@ export function Home() {
 									</div>
 									<div>
 										<QuantityButton id={coffee.id} amount={coffee.amount} />
-										<button type="submit">
+										<button
+											type="submit"
+											onClick={() => addCoffeeOrder(coffee.id)}
+										>
 											<ShoppingCartSimple weight="fill" size={25} />
 										</button>
 									</div>

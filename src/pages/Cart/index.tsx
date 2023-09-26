@@ -6,7 +6,7 @@ import {
 	Money,
 	Trash,
 } from 'phosphor-react';
-import expresso from '../../assets/coffee-types/expresso.svg';
+
 import {
 	CartContainer,
 	CartItem,
@@ -26,8 +26,16 @@ import {
 	PaymentsMethods,
 } from './styles';
 import { QuantityButton } from '../../components/QuantityButton';
+import { useContext, useEffect } from 'react';
+import { OrderContext } from '../../context/OrderContext';
 
 export function Cart() {
+	const { order } = useContext(OrderContext);
+
+	useEffect(() => {
+		return;
+	}, [order]);
+
 	return (
 		<CartContainer>
 			<OrderForm>
@@ -79,32 +87,26 @@ export function Cart() {
 				<div>
 					<h3>Cafés Selecionados</h3>
 					<OrderSummary>
-						<CartItem>
-							<img src={expresso} alt="" />
-							<ItemActions>
-								<p>Espresso Tradicional</p>
-								<CartItemsOptions>
-									<QuantityButton />
-									<DeleteButton>
-										<Trash size={20} /> Remover
-									</DeleteButton>
-								</CartItemsOptions>
-							</ItemActions>
-							<span>9,90</span>
-						</CartItem>
-						<CartItem>
-							<img src={expresso} alt="" />
-							<ItemActions>
-								<p>Espresso Tradicional</p>
-								<CartItemsOptions>
-									<QuantityButton />
-									<DeleteButton>
-										<Trash size={20} /> Remover
-									</DeleteButton>
-								</CartItemsOptions>
-							</ItemActions>
-							<span>9,90</span>
-						</CartItem>
+						{order.map((item) => (
+							<CartItem key={item.id}>
+								<img src={item.img} alt="" />
+								<ItemActions>
+									<p>{item.name}</p>
+									<CartItemsOptions>
+										<QuantityButton
+											amount={item.amount}
+											id={item.id}
+											key={item.id}
+											isCart
+										/>
+										<DeleteButton>
+											<Trash size={20} /> Remover
+										</DeleteButton>
+									</CartItemsOptions>
+								</ItemActions>
+								<span>{item.price}</span>
+							</CartItem>
+						))}
 						<OrderValuesSummary>
 							<div>
 								<span>Total de itens</span>

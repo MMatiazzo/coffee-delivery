@@ -17,6 +17,8 @@ interface IOrdersContextType {
 	addCoffeeOrder: (id: number) => void;
 	increaseAmount: (id: number) => void;
 	decreaseAmount: (id: number) => void;
+	increaseCoffeeAmountOrder: (id: number) => void;
+	decreaseCoffeeAmountOrder: (id: number) => void;
 }
 
 export const OrderContext = createContext({} as IOrdersContextType);
@@ -44,6 +46,24 @@ export function OrdersContextProvider({
 
 					return [...state, coffeeChosen];
 				}
+			} else if (action.type === 'ADD_AMOUNT_COFFEE_CART') {
+				return state.map((orderState) => {
+					if (orderState.id === action.payload.coffeeId) {
+						const amount = orderState.amount + 1;
+						return { ...orderState, amount };
+					}
+
+					return { ...orderState };
+				});
+			} else if (action.type === 'SUB_AMOUNT_COFFEE_CART') {
+				return state.map((orderState) => {
+					if (orderState.id === action.payload.coffeeId) {
+						const amount = orderState.amount > 1 ? orderState.amount - 1 : 1;
+						return { ...orderState, amount };
+					}
+
+					return { ...orderState };
+				});
 			}
 
 			return state;
@@ -58,6 +78,24 @@ export function OrdersContextProvider({
 	function addCoffeeOrder(coffeeId: number) {
 		dispatch({
 			type: 'ADD_COFFEE_TO_CART',
+			payload: {
+				coffeeId,
+			},
+		});
+	}
+
+	function increaseCoffeeAmountOrder(coffeeId: number) {
+		dispatch({
+			type: 'ADD_AMOUNT_COFFEE_CART',
+			payload: {
+				coffeeId,
+			},
+		});
+	}
+
+	function decreaseCoffeeAmountOrder(coffeeId: number) {
+		dispatch({
+			type: 'SUB_AMOUNT_COFFEE_CART',
 			payload: {
 				coffeeId,
 			},
@@ -94,6 +132,8 @@ export function OrdersContextProvider({
 				coffeesProducts,
 				increaseAmount,
 				decreaseAmount,
+				increaseCoffeeAmountOrder,
+				decreaseCoffeeAmountOrder,
 			}}
 		>
 			{children}

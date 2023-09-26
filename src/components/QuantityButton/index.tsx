@@ -6,10 +6,16 @@ import { OrderContext } from '../../context/OrderContext';
 interface IQuantityButtonProps {
 	id: number;
 	amount: number;
+	isCart?: boolean;
 }
 
-export function QuantityButton({ id, amount }: IQuantityButtonProps) {
-	const { increaseAmount, decreaseAmount } = useContext(OrderContext);
+export function QuantityButton({ id, amount, isCart }: IQuantityButtonProps) {
+	const {
+		increaseAmount,
+		decreaseAmount,
+		increaseCoffeeAmountOrder,
+		decreaseCoffeeAmountOrder,
+	} = useContext(OrderContext);
 
 	function handleIncreaseCoffeeAmount() {
 		increaseAmount(id);
@@ -19,13 +25,35 @@ export function QuantityButton({ id, amount }: IQuantityButtonProps) {
 		decreaseAmount(id);
 	}
 
+	function handleIncreaseCoffeeAmountCart() {
+		increaseCoffeeAmountOrder(id);
+	}
+
+	function handleDecreaseCoffeeAmountCart() {
+		decreaseCoffeeAmountOrder(id);
+	}
+
 	return (
 		<QuantityButtonContainer>
-			<button onClick={() => handleIncreaseCoffeeAmount()}>
+			<button
+				type="button"
+				onClick={
+					isCart
+						? () => handleIncreaseCoffeeAmountCart()
+						: () => handleIncreaseCoffeeAmount()
+				}
+			>
 				<Plus />
 			</button>
 			{amount}
-			<button onClick={() => handleDecreaseCoffeeAmount()}>
+			<button
+				type="button"
+				onClick={
+					isCart
+						? () => handleDecreaseCoffeeAmountCart()
+						: () => handleDecreaseCoffeeAmount()
+				}
+			>
 				<Minus />
 			</button>
 		</QuantityButtonContainer>

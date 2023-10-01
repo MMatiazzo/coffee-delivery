@@ -6,19 +6,32 @@ import {
 	useState,
 } from 'react';
 import { ICoffeeProducts, coffees } from '../pages/Home/coffees-constants-mock';
+import { orderReducer } from '../reducers/order/reducer';
 
 interface IOrderContextProviderProps {
 	children: ReactNode;
 }
 
+interface IOrderSummary {
+	cep?: string;
+	rua?: string;
+	numero?: number;
+	complemento?: string;
+	bairro?: string;
+	cidade?: string;
+	uf?: string;
+	products: ICoffeeProducts[];
+}
+
 interface IOrdersContextType {
-	order: ICoffeeProducts[];
+	order: IOrderSummary;
 	coffeesProducts: ICoffeeProducts[];
 	addCoffeeOrder: (id: number) => void;
 	increaseAmount: (id: number) => void;
 	decreaseAmount: (id: number) => void;
 	increaseCoffeeAmountOrder: (id: number) => void;
 	decreaseCoffeeAmountOrder: (id: number) => void;
+	removeCoffeeFromOrder: (id: number) => void;
 }
 
 export const OrderContext = createContext({} as IOrdersContextType);
@@ -28,48 +41,7 @@ export function OrdersContextProvider({
 }: IOrderContextProviderProps) {
 	const [coffeesProducts, setCoffeesProducts] = useState<ICoffeeProducts[]>([]);
 
-	const [order, dispatch] = useReducer(
-		(state: ICoffeeProducts[], action: any) => {
-			if (action.type === 'ADD_COFFEE_TO_CART') {
-				const coffeeAlreadyExists = state.find(
-					(c) => c.id === action.payload.coffeeId
-				);
-
-				if (!coffeeAlreadyExists) {
-					const coffeeChosen = coffeesProducts.find(
-						({ id }) => id === action.payload.coffeeId
-					);
-
-					if (!coffeeChosen) {
-						throw new Error('Something went wrong adding coffees');
-					}
-
-					return [...state, coffeeChosen];
-				}
-			} else if (action.type === 'ADD_AMOUNT_COFFEE_CART') {
-				return state.map((orderState) => {
-					if (orderState.id === action.payload.coffeeId) {
-						const amount = orderState.amount + 1;
-						return { ...orderState, amount };
-					}
-
-					return { ...orderState };
-				});
-			} else if (action.type === 'SUB_AMOUNT_COFFEE_CART') {
-				return state.map((orderState) => {
-					if (orderState.id === action.payload.coffeeId) {
-						const amount = orderState.amount > 1 ? orderState.amount - 1 : 1;
-						return { ...orderState, amount };
-					}
-
-					return { ...orderState };
-				});
-			}
-
-			return state;
-		},
-		[]
-	);
+	const [order, dispatch] = useReducer(orderReducer, { products: [] });
 
 	useEffect(() => {
 		if (!coffeesProducts.length) setCoffeesProducts(coffees);
@@ -124,6 +96,15 @@ export function OrdersContextProvider({
 		);
 	}
 
+	function removeCoffeeFromOrder(coffeeId: number) {
+		dispatch({
+			type: 'REMOVE_COFFEE_FROM_CART',
+			payload: {
+				coffeeId,
+			},
+		});
+	}
+
 	return (
 		<OrderContext.Provider
 			value={{
@@ -134,6 +115,7 @@ export function OrdersContextProvider({
 				decreaseAmount,
 				increaseCoffeeAmountOrder,
 				decreaseCoffeeAmountOrder,
+				removeCoffeeFromOrder,
 			}}
 		>
 			{children}

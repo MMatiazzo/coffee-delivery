@@ -1,3 +1,9 @@
+import { useContext, useEffect } from 'react';
+
+import { useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+import * as zod from 'zod';
+
 import {
 	Bank,
 	CreditCard,
@@ -25,20 +31,60 @@ import {
 	PaymentMethodButtom,
 	PaymentsMethods,
 } from './styles';
+
 import { QuantityButton } from '../../components/QuantityButton';
-import { useContext, useEffect } from 'react';
 import { OrderContext } from '../../context/OrderContext';
 
+const finishOrderFormValidationSchema = zod.object({
+	cep: zod.string().min(8, 'Informe o CEP'),
+	rua: zod.string().min(1, 'Informe a Rua'),
+	numero: zod.number().min(1),
+	complemento: zod.string().min(1),
+	bairro: zod.string().min(1),
+	cidade: zod.string().min(1),
+	uf: zod.string().min(2).max(2),
+	payment: zod.string(),
+});
+
+type FinishOrderData = zod.infer<typeof finishOrderFormValidationSchema>;
+
 export function Cart() {
-	const { order } = useContext(OrderContext);
+	const { register, handleSubmit, reset } = useForm<FinishOrderData>({
+		resolver: zodResolver(finishOrderFormValidationSchema),
+		defaultValues: {
+			cep: '',
+			bairro: '',
+			cidade: '',
+			complemento: '',
+			numero: 0,
+			rua: '',
+			uf: '',
+		},
+	});
+
+	const {
+		order: { products },
+		removeCoffeeFromOrder,
+	} = useContext(OrderContext);
+
+	const totalOrder = products
+		.reduce((acc, o) => {
+			return acc + o.price * o.amount;
+		}, 0)
+		.toFixed(2);
 
 	useEffect(() => {
 		return;
-	}, [order]);
+	}, [products]);
+
+	function handleFinishOrder(data: FinishOrderData) {
+		console.log(data);
+		reset();
+	}
 
 	return (
 		<CartContainer>
-			<OrderForm>
+			<OrderForm onSubmit={handleSubmit(handleFinishOrder)}>
 				<div>
 					<h3>Complete seu pedido</h3>
 					<OrderAddress>
@@ -50,16 +96,44 @@ export function Cart() {
 							</div>
 						</OrderAddressInfo>
 						<OrderInput>
-							<OrderInfoInput type="text" placeholder="CEP" />
-							<OrderInfoInput type="text" placeholder="Rua" />
+							<OrderInfoInput
+								type="text"
+								placeholder="CEP"
+								{...register('cep')}
+							/>
+							<OrderInfoInput
+								type="text"
+								placeholder="Rua"
+								{...register('rua')}
+							/>
 							<div>
-								<OrderInfoInput type="text" placeholder="Número" />
-								<OrderInfoInput type="text" placeholder="Complemento" />
+								<OrderInfoInput
+									type="text"
+									placeholder="Número"
+									{...register('numero')}
+								/>
+								<OrderInfoInput
+									type="text"
+									placeholder="Complemento"
+									{...register('complemento')}
+								/>
 							</div>
 							<div>
-								<OrderInfoInput type="text" placeholder="Bairro" />
-								<OrderInfoInput type="text" placeholder="Cidade" />
-								<OrderInfoInput type="text" placeholder="UF" />
+								<OrderInfoInput
+									type="text"
+									placeholder="Bairro"
+									{...register('bairro')}
+								/>
+								<OrderInfoInput
+									type="text"
+									placeholder="Cidade"
+									{...register('cidade')}
+								/>
+								<OrderInfoInput
+									type="text"
+									placeholder="UF"
+									{...register('uf')}
+								/>
 							</div>
 						</OrderInput>
 					</OrderAddress>
@@ -72,13 +146,16 @@ export function Cart() {
 							</div>
 						</OrderAddressInfo>
 						<PaymentsMethods>
-							<PaymentMethodButtom value="creadit-card">
+							<PaymentMethodButtom
+								value="creadit-card"
+								{...register('payment')}
+							>
 								<CreditCard /> Cartão de crédito
 							</PaymentMethodButtom>
-							<PaymentMethodButtom value="debit-card">
+							<PaymentMethodButtom value="debit-card" {...register('payment')}>
 								<Bank /> Cartão de débito
 							</PaymentMethodButtom>
-							<PaymentMethodButtom value="money">
+							<PaymentMethodButtom value="money" {...register('payment')}>
 								<Money /> Dinheiro
 							</PaymentMethodButtom>
 						</PaymentsMethods>
@@ -87,7 +164,7 @@ export function Cart() {
 				<div>
 					<h3>Cafés Selecionados</h3>
 					<OrderSummary>
-						{order.map((item) => (
+						{products.map((item) => (
 							<CartItem key={item.id}>
 								<img src={item.img} alt="" />
 								<ItemActions>
@@ -99,7 +176,9 @@ export function Cart() {
 											key={item.id}
 											isCart
 										/>
-										<DeleteButton>
+										<DeleteButton
+											onClick={() => removeCoffeeFromOrder(item.id)}
+										>
 											<Trash size={20} /> Remover
 										</DeleteButton>
 									</CartItemsOptions>
@@ -110,7 +189,7 @@ export function Cart() {
 						<OrderValuesSummary>
 							<div>
 								<span>Total de itens</span>
-								<span>29,90</span>
+								<span>{totalOrder}</span>
 							</div>
 							<div>
 								<span>Entrega</span>
@@ -118,7 +197,7 @@ export function Cart() {
 							</div>
 							<div>
 								<h3>Total</h3>
-								<h3>33,20</h3>
+								<h3>{(Number(totalOrder) + 3.5).toFixed(2)}</h3>
 							</div>
 							<FinalizeOrderButton>Confirmar Pedido</FinalizeOrderButton>
 						</OrderValuesSummary>

@@ -7,7 +7,9 @@ import { OrderContext } from '../../context/OrderContext';
 import { Link } from 'react-router-dom';
 
 export function Header() {
-	const { order } = useContext(OrderContext);
+	const {
+		order: { products },
+	} = useContext(OrderContext);
 
 	return (
 		<HeaderContainer>
@@ -22,7 +24,7 @@ export function Header() {
 				<Link className="shopping-cart" to="/cart">
 					<ShoppingCart weight="fill" size={25} />
 				</Link>
-				<span>{order.length}</span>
+				<span>{products.length}</span>
 			</CartSettingsContainer>
 		</HeaderContainer>
 	);

@@ -1,28 +1,27 @@
-import { ICoffeeProducts } from '../../pages/Home/coffees-constants-mock';
+import { IOrderSummary } from '../../context/OrderContext';
 import { coffees } from '../../pages/Home/coffees-constants-mock';
 
+interface IPayloadOrderSummary {
+	cep: string;
+	rua: string;
+	numero: number;
+	complemento: string;
+	bairro: string;
+	cidade: string;
+	uf: string;
+	payment: string;
+}
+
+interface IPayloadOrderCoffeeId {
+	coffeeId: number;
+}
 interface IOrderReducerActionProps {
 	type: string;
-	payload: {
-		coffeeId: number;
-	};
+	payload: IPayloadOrderSummary | IPayloadOrderCoffeeId;
 }
 
-interface IOrderSummary {
-	cep?: string;
-	rua?: string;
-	numero?: number;
-	complemento?: string;
-	bairro?: string;
-	cidade?: string;
-	uf?: string;
-	products: ICoffeeProducts[];
-}
-
-export function orderReducer(
-	state: IOrderSummary,
-	action: IOrderReducerActionProps
-) {
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export function orderReducer(state: IOrderSummary, action: any) {
 	// eslint-disable-next-line react-hooks/rules-of-hooks
 
 	switch (action.type) {
@@ -78,6 +77,23 @@ export function orderReducer(
 			);
 
 			return { ...state, products };
+		}
+
+		case 'FINISH_ORDER': {
+			const { cep, rua, numero, complemento, bairro, cidade, uf, payment } =
+				action.payload;
+
+			return {
+				cep,
+				rua,
+				numero,
+				complemento,
+				bairro,
+				cidade,
+				uf,
+				payment,
+				products: state.products,
+			};
 		}
 
 		default:

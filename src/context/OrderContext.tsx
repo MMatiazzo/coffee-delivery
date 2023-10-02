@@ -7,12 +7,14 @@ import {
 } from 'react';
 import { ICoffeeProducts, coffees } from '../pages/Home/coffees-constants-mock';
 import { orderReducer } from '../reducers/order/reducer';
+import { FinishOrderData } from '../pages/Cart';
+import { useNavigate } from 'react-router-dom';
 
 interface IOrderContextProviderProps {
 	children: ReactNode;
 }
 
-interface IOrderSummary {
+export interface IOrderSummary {
 	cep?: string;
 	rua?: string;
 	numero?: number;
@@ -20,6 +22,7 @@ interface IOrderSummary {
 	bairro?: string;
 	cidade?: string;
 	uf?: string;
+	payment?: string;
 	products: ICoffeeProducts[];
 }
 
@@ -32,6 +35,7 @@ interface IOrdersContextType {
 	increaseCoffeeAmountOrder: (id: number) => void;
 	decreaseCoffeeAmountOrder: (id: number) => void;
 	removeCoffeeFromOrder: (id: number) => void;
+	finishOrder: (data: FinishOrderData) => void;
 }
 
 export const OrderContext = createContext({} as IOrdersContextType);
@@ -39,6 +43,7 @@ export const OrderContext = createContext({} as IOrdersContextType);
 export function OrdersContextProvider({
 	children,
 }: IOrderContextProviderProps) {
+	const navigate = useNavigate();
 	const [coffeesProducts, setCoffeesProducts] = useState<ICoffeeProducts[]>([]);
 
 	const [order, dispatch] = useReducer(orderReducer, { products: [] });
@@ -72,6 +77,28 @@ export function OrdersContextProvider({
 				coffeeId,
 			},
 		});
+	}
+
+	function finishOrder(data: FinishOrderData) {
+		const { cep, rua, numero, complemento, bairro, cidade, uf, payment } = data;
+
+		console.log('payment on finishOrder => ', payment);
+
+		dispatch({
+			type: 'FINISH_ORDER',
+			payload: {
+				cep,
+				rua,
+				numero,
+				complemento,
+				bairro,
+				cidade,
+				uf,
+				payment,
+			},
+		});
+
+		navigate('/order-summary');
 	}
 
 	function increaseAmount(coffeeId: number) {
@@ -116,6 +143,7 @@ export function OrdersContextProvider({
 				increaseCoffeeAmountOrder,
 				decreaseCoffeeAmountOrder,
 				removeCoffeeFromOrder,
+				finishOrder,
 			}}
 		>
 			{children}

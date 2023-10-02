@@ -1,3 +1,4 @@
+import { useContext } from 'react';
 import { CurrencyDollar, MapPin, Timer } from 'phosphor-react';
 import deliveryImg from '../../assets/delivery-img.svg';
 import {
@@ -6,8 +7,13 @@ import {
 	OrderInfoContainer,
 	OrderSummaryContainer,
 } from './styles';
+import { OrderContext } from '../../context/OrderContext';
 
 export function OrderSummary() {
+	const {
+		order: { rua, bairro, cidade, complemento, numero, uf, payment },
+	} = useContext(OrderContext);
+
 	return (
 		<OrderSummaryContainer>
 			<OrderContainer>
@@ -23,9 +29,15 @@ export function OrderSummary() {
 							</span>
 							<div>
 								<p>
-									Entrega em <strong>Rua João Daniel Martinelli, 10</strong>
+									Entrega em
+									<strong>
+										{' '}
+										{rua}, {numero} {complemento}
+									</strong>
 								</p>
-								<p>Farrapos - Porto Alegre, RS</p>
+								<p>
+									{bairro} - {cidade}, {uf}
+								</p>
 							</div>
 						</OrderInfo>
 						<OrderInfo variant="yellow-base">
@@ -46,7 +58,13 @@ export function OrderSummary() {
 							<div>
 								<p>Pagamento na entrega</p>
 								<p>
-									<strong>Cartão de Crédito</strong>
+									{payment === 'credit-cart' && (
+										<strong>Cartão de Crédito</strong>
+									)}
+									{payment === 'debit-card' && (
+										<strong>Cartão de Débito</strong>
+									)}
+									{payment === 'money' && <strong>Dinheiro</strong>}
 								</p>
 							</div>
 						</OrderInfo>

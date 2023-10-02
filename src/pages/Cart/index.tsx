@@ -28,7 +28,7 @@ import {
 	OrderInput,
 	OrderSummary,
 	OrderValuesSummary,
-	PaymentMethodButtom,
+	PaymentMethodButton,
 	PaymentsMethods,
 } from './styles';
 
@@ -38,15 +38,15 @@ import { OrderContext } from '../../context/OrderContext';
 const finishOrderFormValidationSchema = zod.object({
 	cep: zod.string().min(8, 'Informe o CEP'),
 	rua: zod.string().min(1, 'Informe a Rua'),
-	numero: zod.number().min(1),
+	numero: zod.string(),
 	complemento: zod.string().min(1),
 	bairro: zod.string().min(1),
 	cidade: zod.string().min(1),
 	uf: zod.string().min(2).max(2),
-	payment: zod.string(),
+	payment: zod.any(),
 });
 
-type FinishOrderData = zod.infer<typeof finishOrderFormValidationSchema>;
+export type FinishOrderData = zod.infer<typeof finishOrderFormValidationSchema>;
 
 export function Cart() {
 	const { register, handleSubmit, reset } = useForm<FinishOrderData>({
@@ -56,15 +56,17 @@ export function Cart() {
 			bairro: '',
 			cidade: '',
 			complemento: '',
-			numero: 0,
+			numero: '',
 			rua: '',
 			uf: '',
+			payment: '',
 		},
 	});
 
 	const {
 		order: { products },
 		removeCoffeeFromOrder,
+		finishOrder,
 	} = useContext(OrderContext);
 
 	const totalOrder = products
@@ -77,8 +79,9 @@ export function Cart() {
 		return;
 	}, [products]);
 
-	function handleFinishOrder(data: FinishOrderData) {
-		console.log(data);
+	// eslint-disable-next-line @typescript-eslint/no-explicit-any
+	function handleFinishOrder(data: any) {
+		finishOrder(data);
 		reset();
 	}
 
@@ -145,19 +148,16 @@ export function Cart() {
 								<span>Informe o endereço onde deseja receber seu pedido</span>
 							</div>
 						</OrderAddressInfo>
-						<PaymentsMethods>
-							<PaymentMethodButtom
-								value="creadit-card"
-								{...register('payment')}
-							>
+						<PaymentsMethods {...register('payment')}>
+							<PaymentMethodButton value="credit">
 								<CreditCard /> Cartão de crédito
-							</PaymentMethodButtom>
-							<PaymentMethodButtom value="debit-card" {...register('payment')}>
+							</PaymentMethodButton>
+							<PaymentMethodButton value="debit">
 								<Bank /> Cartão de débito
-							</PaymentMethodButtom>
-							<PaymentMethodButtom value="money" {...register('payment')}>
+							</PaymentMethodButton>
+							<PaymentMethodButton value="money">
 								<Money /> Dinheiro
-							</PaymentMethodButtom>
+							</PaymentMethodButton>
 						</PaymentsMethods>
 					</OrderInfo>
 				</div>

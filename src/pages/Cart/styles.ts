@@ -99,7 +99,7 @@ export const PaymentsMethods = styled(RadioGroup.Root)`
 	padding: 0;
 `;
 
-export const PaymentMethodButtom = styled(RadioGroup.Item)`
+export const PaymentMethodButton = styled(RadioGroup.Item)`
 	background: ${(props) => props.theme['base-button']};
 	padding: 1rem;
 	display: flex;
